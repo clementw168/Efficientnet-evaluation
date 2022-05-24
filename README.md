@@ -23,7 +23,7 @@ The dataset is a balanced set of 50,000 images over 1,000 classes. Some images a
 
 
 
-| Class number | Class name | F1 score | Accuracy | Precision | Recall | Specificity |
+| Class ID | Class name | F1 score | Accuracy | Precision | Recall | Specificity |
 | :----- | :-----  | :-----: | :-----: | :-----: | :-----: | :-----: |
 | 986 | Yellow lady's slipper, yellow lady-slipper, Cypripedium calceolus, Cypripedium parviflorum    |  1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
 |  24 | Great grey owl, great gray owl, Strix nebulosa | 0.99 | 0.98 |  1.0 | 0.98 |  1.0 |
