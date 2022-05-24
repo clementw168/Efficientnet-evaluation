@@ -15,6 +15,11 @@ The dataset is a balanced set of 50,000 images over 1,000 classes. Some images a
 | :----- | :----- |
 |  Accuracy       |  0.743 |
 |  Top 5 Accuracy |  0.919 |
+|  F1 Score       |  0.743 |
+|  Precision      |  0.743 |
+|  Recall         |  0.743 |
+|  Specificity    | 0.9997 |
+
 
 
 

@@ -18,9 +18,13 @@ from utils import eval, dataset
 global_metrics = [
     torchmetrics.Accuracy(num_classes=constants.num_classes).to(constants.device),
     torchmetrics.Accuracy(num_classes=constants.num_classes, top_k=5).to(constants.device),
+    torchmetrics.F1Score(num_classes=constants.num_classes).to(constants.device),
+    torchmetrics.Precision(num_classes=constants.num_classes).to(constants.device),
+    torchmetrics.Recall(num_classes=constants.num_classes).to(constants.device),
+    torchmetrics.Specificity(num_classes=constants.num_classes).to(constants.device),
     ]
 
-global_metrics_name = ["Accuracy", "Top 5 Accuracy"]
+global_metrics_name = ["Accuracy", "Top 5 Accuracy", "F1 score", "Precision", "Recall", "Specificity"]
 
 sep_metrics = [
     torchmetrics.F1Score(num_classes=constants.num_classes, average="none").to(constants.device),
