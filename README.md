@@ -2,26 +2,33 @@
 
 This repository aims to evaluate `Efficientnet` on a test set of 50,000 images.
 
+
+## Dataset
+
+The dataset is a balanced set of 50,000 images over 1,000 classes. Some images are in `gray scale` or in `RGBA` format. `gray scale` are repeated to have 3 channels and `RGBA` images are converted to `RGB`.
+
+
+
 ## Results
 
 | Metric | Value |
 | :----- | :----- |
 |  Accuracy       |  0.743 |
 |  Top 5 Accuracy |  0.919 |
-|  Macro Accuracy |  0.742 |
-
-| Best classes | Accuracy |
-| :----- | :----- |
-|  Limpkin, Aramus pictus    |  1.0 |
-|  Ostrich, Struthio camelus |  1.0 |
-|  Leonberg                  |  1.0 |
 
 
-| Worst classes | Accuracy |
-| :----- | :----- |
-|  Projectile, missile    |  0.152 |
-|  Velvet                 |  0.160 |
-|  Screen, CRT screen     |  0.200 |
+
+| Class number | Class name | F1 score | Accuracy | Precision | Recall | Specificity |
+| :----- | :-----  | :-----: | :-----: | :-----: | :-----: | :-----: |
+| 986 | Yellow lady's slipper, yellow lady-slipper, Cypripedium calceolus, Cypripedium parviflorum    |  1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+|  24 | Great grey owl, great gray owl, Strix nebulosa | 0.99 | 0.98 |  1.0 | 0.98 |  1.0 |
+| 135 | Limpkin, Aramus pictus                         | 0.98 | 1.0  | 0.96 |  1.0 |  1.0 |
+|. . . |
+| 885 | Velvet                      | 0.24 | 0.16 | 0.47 | 0.16 |  1.0  |
+| 681 | Notebook, notebook computer | 0.21 | 0.20 | 0.22 | 0.20 |  0.99 |
+| 744 | Projectile, missile         | 0.20 | 0.14 | 0.33 | 0.14 |  1.0  |
+
+
 
 |![Confusion matrix](https://github.com/clementw168/Efficientnet-evaluation/blob/main/confusion_matrix.png)|
 |:----:|

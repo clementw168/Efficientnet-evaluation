@@ -15,10 +15,11 @@ def load_json(file):
     return df
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, annotation_file, img_dir, transform=None):
+    def __init__(self, annotation_file, img_dir, transform=None, drop_non_valid=False):
         self.img_labels = load_json(annotation_file)
         self.img_dir = img_dir
         self.transform = transform
+        self.drop_non_valid = drop_non_valid
 
     def __len__(self):
         return len(self.img_labels)
@@ -27,8 +28,11 @@ class Dataset(torch.utils.data.Dataset):
         img_path = os.path.join(self.img_dir, self.img_labels.index.values[idx])
         image = Image.open(img_path)
         label = self.img_labels.iloc[idx, 0]
-        if len(image.mode) != 3: # Filter if there is non rgb images
-            return None
+        if image.mode != "RGB": # Filter if there is non rgb images
+            if self.drop_non_valid:
+                return None
+            else:
+                image = image.convert("RGB")
         if self.transform:
             image = self.transform(image)
 
@@ -46,11 +50,12 @@ def create_transform():
             torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),])
     return transform
 
-def create_dataloader(batch_size=16, shuffle=False, pin_memory=False, num_workers=4):
+def create_dataloader(batch_size=16, shuffle=False, pin_memory=False, num_workers=4, drop_non_valid=False):
     transform = create_transform()
     dataset = Dataset(annotation_file=constants.label_file,
                         img_dir=constants.image_folder,
-                        transform=transform)
+                        transform=transform,
+                        drop_non_valid=drop_non_valid)
     dataloader = torch.utils.data.DataLoader(dataset,
                                             batch_size=batch_size,
                                             shuffle=shuffle,
@@ -65,15 +70,19 @@ if __name__=="__main__":
 
     ### test dataloader
 
-    # dataloader = create_dataloader()
-    # print(len(dataloader.dataset))
+    dataloader = create_dataloader(batch_size=32,
+                        shuffle=False,
+                        pin_memory=False,
+                        num_workers=4,
+                        drop_non_valid=False)
+    print(len(dataloader.dataset))
 
-    # for X, y in dataloader:
-    #     print(X.shape)
-    #     print(y)
+    for X, y in dataloader:
+        print(X.shape)
+        print(y)
 
     ### test get_classes
 
-    ind = 1
-    classes = load_json(constants.categories_file)
-    print(classes.iloc[ind, 0])
+    # ind = 1
+    # classes = load_json(constants.categories_file)
+    # print(classes.iloc[ind, 0])

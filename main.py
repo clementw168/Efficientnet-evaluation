@@ -8,20 +8,28 @@ import torchmetrics
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import constants
 from utils import eval, dataset
 
 # Define metrics
 
-metrics = [
+global_metrics = [
     torchmetrics.Accuracy(num_classes=constants.num_classes).to(constants.device),
     torchmetrics.Accuracy(num_classes=constants.num_classes, top_k=5).to(constants.device),
-    torchmetrics.Accuracy(average="macro", num_classes=constants.num_classes).to(constants.device),
     ]
-metrics_name = ["Accuracy", "Top 5 Accuracy", "Macro Accuracy"]
 
-sep_acc_fn = torchmetrics.Accuracy(num_classes=constants.num_classes, average="none").to(constants.device)
+global_metrics_name = ["Accuracy", "Top 5 Accuracy"]
+
+sep_metrics = [
+    torchmetrics.F1Score(num_classes=constants.num_classes, average="none").to(constants.device),
+    torchmetrics.Accuracy(num_classes=constants.num_classes, average="none").to(constants.device),
+    torchmetrics.Precision(num_classes=constants.num_classes, average="none").to(constants.device),
+    torchmetrics.Recall(num_classes=constants.num_classes, average="none").to(constants.device),
+    torchmetrics.Specificity(num_classes=constants.num_classes, average="none").to(constants.device),
+    ]
+sep_metrics_name = ["F1 score", "Accuracy", "Precision", "Recall", "Specificity"]
 
 cm_fn = torchmetrics.ConfusionMatrix(num_classes=constants.num_classes,
                                     normalize="true").to(constants.device)
@@ -33,43 +41,36 @@ model = EfficientNet.from_pretrained('efficientnet-b0').to(constants.device)
 dl = dataset.create_dataloader(batch_size=32,
                                 shuffle=False,
                                 pin_memory=False,
-                                num_workers=4)
+                                num_workers=4,
+                                drop_non_valid=False)
 
 classes = dataset.load_json(constants.categories_file)
 
 if __name__=="__main__":
 
-    # Get preds
+    ## Get preds
     y_true, logits = eval.get_preds(dl, model)
 
     print(f"Testing set contains {len(y_true)} valid samples.")
 
-    # Print metrics
-    for name, metric in zip(metrics_name, metrics):
+    ## Print global metrics
+    for name, metric in zip(global_metrics_name, global_metrics):
         print(f"{name}: {metric(logits, y_true)}")
 
-    # Separate accuracy
 
-    sep_acc = sep_acc_fn(logits, y_true)
-    best_acc, best_ind = torch.topk(sep_acc, k=5, largest=True)
-    best_acc = best_acc.cpu()
-    best_ind = best_ind.cpu()
+    ## Print best and worst samples metrics according to F1 score
+    sep_metrics_values = []
+    for metric in sep_metrics:
+        sep_metrics_values.append(metric(logits, y_true).cpu().numpy())
 
-    print("-"*20)
-    print("Best accuracies:")
-    for acc, ind in zip(best_acc, best_ind):
-        # print(ind)
-        # print(classes.iloc[ind, 0])
-        print(f"Class {ind.item()} - {classes.iloc[ind.item(), 0]}: {acc}")
+    df = {
+        "Class": classes.loc[:, 0].values,
+        **dict(zip(sep_metrics_name, sep_metrics_values))
+        }
+    df = pd.DataFrame(df)
 
-    worst_acc, worst_ind = torch.topk(sep_acc, k=5, largest=False)
-    worst_acc = worst_acc.cpu()
-    worst_ind = worst_ind.cpu()
-
-    print("-"*20)
-    print("Worst accuracies:")
-    for acc, ind in zip(worst_acc, worst_ind):
-        print(f"Class {ind.item()} - {classes.iloc[ind.item(), 0]}: {acc}")
+    df.to_csv("class_scores.csv")
+    print(df.sort_values("F1 score", ascending=False))
 
 
     # Plot confusion matrix
