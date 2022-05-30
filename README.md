@@ -1,11 +1,11 @@
 # Efficientnet-evaluation
 
-This repository aims to evaluate `Efficientnet` on a test set of 50,000 images.
+This repository aims to evaluate a pre-trained `Efficientnet` on a test set of 50,000 images.
 
 
 ## Dataset
 
-The dataset is a balanced set of 50,000 images over 1,000 classes. Some images are in `gray scale` or in `RGBA` format. `gray scale` are repeated to have 3 channels and `RGBA` images are converted to `RGB`.
+The dataset is a balanced set of 50,000 images over 1,000 classes. Some images are in `gray scale` or in `RGBA` format. `gray scale` images are repeated to have 3 channels and `RGBA` images are converted to `RGB`.
 
 
 
