@@ -39,7 +39,7 @@ cm_fn = torchmetrics.ConfusionMatrix(num_classes=constants.num_classes,
                                     normalize="true").to(constants.device)
 
 
-# Load model et data
+# Load model and data
 
 model = EfficientNet.from_pretrained('efficientnet-b0').to(constants.device)
 dl = dataset.create_dataloader(batch_size=32,
