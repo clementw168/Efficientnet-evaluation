@@ -24,11 +24,11 @@ def get_preds(dataloader, model):
     for (X, y) in tqdm.tqdm(dataloader):
 
         with torch.no_grad():
-
+            
             # Work with the GPU if available
             X, y = X.to(constants.device), y.to(constants.device)
 
-            # Compute prediction error
+            # Compute predictions
             preds = model(X)
             y_true.append(y)
             logits.append(preds)
