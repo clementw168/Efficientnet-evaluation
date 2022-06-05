@@ -28,7 +28,7 @@ class Dataset(torch.utils.data.Dataset):
         img_path = os.path.join(self.img_dir, self.img_labels.index.values[idx])
         image = Image.open(img_path)
         label = self.img_labels.iloc[idx, 0]
-        if image.mode != "RGB": # Filter if there is non rgb images
+        if image.mode != "RGB": # Filter if there are non rgb images
             if self.drop_non_valid:
                 return None
             else:
